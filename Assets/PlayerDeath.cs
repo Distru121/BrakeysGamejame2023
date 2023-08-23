@@ -9,6 +9,6 @@ public class PlayerDeath : MonoBehaviour
     public void Death() {
         Debug.Log("dead");
         GameObject death = Instantiate(deathParticles, transform.position, Quaternion.identity);
-        Destroy(death, 5);
+        Destroy(death, 4.95f);
     }
 }

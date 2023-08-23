@@ -66,7 +66,7 @@ public class CharacterController2D : MonoBehaviour
 			airborneTime += Time.fixedDeltaTime;
 		else
 			airborneTime = 0;
-		momentum = m_Rigidbody2D.velocity.magnitude + airborneTime;
+		momentum = m_Rigidbody2D.velocity.magnitude + (airborneTime * 2);
 		if(momentum < 0)
 			momentum = 0;
 		if(momentum > m_SpeedLimit*2)
