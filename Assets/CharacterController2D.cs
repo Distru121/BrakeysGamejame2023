@@ -5,22 +5,26 @@ public class CharacterController2D : MonoBehaviour
 {
 	[SerializeField] private float m_JumpForce = 400f;	// Amount of force added when the player jumps.
 	[SerializeField] private float m_SpeedLimit = 100f; //speed limit the player can reach at max
-	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;			// Amount of maxSpeed applied to crouching movement. 1 = 100%
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
 	[SerializeField] private LayerMask m_WhatIsGround;							// A mask determining what is ground to the character
 	[SerializeField] private Transform m_GroundCheck;							// A position marking where to check if the player is grounded.
 	[SerializeField] private Transform m_CeilingCheck;							// A position marking where to check for ceiling
 	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
-	private bool m_Grounded;            // Whether or not the player is grounded.
+	public bool m_Grounded;            // Whether or not the player is grounded.
 	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
 	private Rigidbody2D m_Rigidbody2D;
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
 
+	public float momentum = 0f; //momentum of the player. If it's too high, it will cause a death upon landing.
+	private float airborneTime = 0f; //a timer that calculates the time the player was airborne at max momentum (freefalling), and sums itself to momentum, to cause death.
+	public float deadlyMomentum = 16f; //the min momentum the player can die at.
+
 	[Header("Events")]
 	[Space]
 
 	public UnityEvent OnLandEvent;
+	public UnityEvent OnDeathEvent;
 
 	[System.Serializable]
 	public class BoolEvent : UnityEvent<bool> { }
@@ -48,12 +52,26 @@ public class CharacterController2D : MonoBehaviour
 				m_Grounded = true;
 				if (!wasGrounded)
 					OnLandEvent.Invoke();
+				if(momentum >= deadlyMomentum)
+					OnDeathEvent.Invoke();
 			}
 		}
 
 		//set velocity back to speed limit if it exceeds said speed
 		if(m_Rigidbody2D.velocity.magnitude > m_SpeedLimit)
 			m_Rigidbody2D.velocity = m_Rigidbody2D.velocity.normalized * m_SpeedLimit;
+
+		//momentum calculation
+		if(!wasGrounded && m_Rigidbody2D.velocity.magnitude > 14f) //if freefalling, add extra airborne time
+			airborneTime += Time.fixedDeltaTime;
+		else
+			airborneTime = 0;
+		momentum = m_Rigidbody2D.velocity.magnitude + (airborneTime * 2);
+		if(momentum < 0)
+			momentum = 0;
+		if(momentum > m_SpeedLimit*2)
+			momentum = m_SpeedLimit*2;
+		Debug.Log(momentum);
 	}
 
 

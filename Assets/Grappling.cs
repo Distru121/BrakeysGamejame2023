@@ -13,7 +13,9 @@ public class Grappling : MonoBehaviour
     private Vector3 mouseDir;
     public Transform linePosition;
     public Rigidbody2D linePositon_rb;
+    public SpriteRenderer grapplingHook_renderer; //the renderer of the line position (end of line)
     public bool isGrappling;
+    public CharacterController2D charController;
 
     public float grapplingHookSpeed = 10f;
     public float grapplingLength = 100f;
@@ -30,6 +32,7 @@ public class Grappling : MonoBehaviour
         _distanceJoint.autoConfigureDistance = true;
         _distanceJoint.enabled = false;
         _lineRenderer.enabled = false;
+        grapplingHook_renderer.enabled = false;
     }
 
     void Update() {
@@ -46,6 +49,8 @@ public class Grappling : MonoBehaviour
                 grapplingLaunchDirection = (mousepos - (Vector2)transform.position).normalized; //sets the launch direction for the grappling hook
 
                 _lineRenderer.SetPosition(0, (Vector2)linePosition.position);
+
+                grapplingHook_renderer.enabled = true;
             }
             if(Input.GetKey(KeyCode.Mouse0))
             {
@@ -62,7 +67,8 @@ public class Grappling : MonoBehaviour
                     linePositon_rb.velocity = new Vector2(0, 0); //reset the velocity of the end of the line once it reached a grappling spot
 
                     //if the rope is hooked UNDER the player, disable the distancejoint (stop calculating grappling phisics, otherwise it doesn't make any sense)
-                    if(transform.position.y > linePosition.position.y)
+                    //if the player is grounded, disable the distancejoint to not hinder movements
+                    if(transform.position.y > linePosition.position.y || charController.m_Grounded == true)
                         _distanceJoint.enabled = false;
                     else
                         _distanceJoint.enabled = true;
@@ -96,8 +102,13 @@ public class Grappling : MonoBehaviour
                     {
                         brokenRope = true;
                         _lineRenderer.enabled = false;
+                        grapplingHook_renderer.enabled = false;
                     }
                 }
+
+                Vector2 dir = linePosition.position - transform.position;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                linePosition.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
                 }
             }
@@ -105,8 +116,10 @@ public class Grappling : MonoBehaviour
             {
                 _distanceJoint.enabled = false;
                 _lineRenderer.enabled = false;
+                grapplingHook_renderer.enabled = false;
                 grappled = false;
                 brokenRope = false;
+
             }
 
             if(_distanceJoint.enabled)

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 021b3abaac817204da57d422e73cfcb1
+guid: c600f57b249d2b048ba82aae2fcc68d2
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,85 +123,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gigio_the_idler_sheet_0
+      name: gigio_the_jumper_sheet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 55
+        width: 49
+        height: 56
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e404042ed87afa14bbe094a7fef03da7
-      internalID: -112601381
+      spriteID: e9289019bee640147acf4548d9f105fe
+      internalID: 884832459
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gigio_the_idler_sheet_1
+      name: gigio_the_jumper_sheet_1
       rect:
         serializedVersion: 2
-        x: 48
+        x: 49
         y: 0
         width: 48
-        height: 55
+        height: 56
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 272bc5d21ce454740810aaf36d402bbf
-      internalID: 799261973
+      spriteID: 98c977e6120f8794ba5983e76381f32d
+      internalID: -2054736491
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gigio_the_idler_sheet_2
+      name: gigio_the_jumper_sheet_2
       rect:
         serializedVersion: 2
-        x: 96
+        x: 97
         y: 0
         width: 48
-        height: 55
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5}
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 29146ab837a6af04abb06c147a14b9f8
-      internalID: 1368441172
+      spriteID: d78b17e9ce810c5438ba147e872a211e
+      internalID: 854809202
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gigio_the_idler_sheet_3
+      name: gigio_the_jumper_sheet_3
       rect:
         serializedVersion: 2
-        x: 144
+        x: 145
         y: 0
         width: 48
-        height: 55
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5}
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 359026ecc75975d4c98d7bd04c571b70
-      internalID: 607104883
+      spriteID: 3a097ee8e1fba5e40a83921d182d6721
+      internalID: -1800364320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gigio_the_jumper_sheet_4
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 0
+        width: 48
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9aceb4ae21ada0749ab16a7eee47b99d
+      internalID: 1424163108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gigio_the_jumper_sheet_5
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 0
+        width: 47
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ab177ea716ac264dad34ca9852f628b
+      internalID: -260135604
       vertices: []
       indices: 
       edges: []
@@ -217,10 +259,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      gigio_the_idler_sheet_0: -112601381
-      gigio_the_idler_sheet_1: 799261973
-      gigio_the_idler_sheet_2: 1368441172
-      gigio_the_idler_sheet_3: 607104883
+      gigio_the_jumper_sheet_0: 884832459
+      gigio_the_jumper_sheet_1: -2054736491
+      gigio_the_jumper_sheet_2: 854809202
+      gigio_the_jumper_sheet_3: -1800364320
+      gigio_the_jumper_sheet_4: 1424163108
+      gigio_the_jumper_sheet_5: -260135604
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
