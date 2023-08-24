@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
+using UnityEngine.UI;
 
 public class CharacterController2D : MonoBehaviour
 {
@@ -11,6 +13,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private Transform m_CeilingCheck;							// A position marking where to check for ceiling
 	[SerializeField] private Grappling grapplingScript;
 	[SerializeField] private Animator animator;									//the animator for the character.
+	[SerializeField] private TrailRenderer trailrenderer;						//the trail behind the player
 	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
 	public bool m_Grounded;            // Whether or not the player is grounded.
 	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
@@ -24,6 +27,16 @@ public class CharacterController2D : MonoBehaviour
 	private float airborneTime = 0f; //a timer that calculates the time the player was airborne at max momentum (freefalling), and sums itself to momentum, to cause death.
 	public float deadlyMomentum = 16f; //the min momentum the player can die at.
 
+	//UI ELEMENTS
+	public TMP_Text momentum_text;
+	public Image grapplingStatus; //the grappling UI
+	public Image grapplingStatusRoot; //the grey thing that is seen behind the grappling UI
+	public float remainingRope = 1;
+	public Image canDoubleJump;
+	public Sprite grapplingRope;
+	public Sprite grapplingRopeHooked;
+
+	//events
 	[Header("Events")]
 	[Space]
 
@@ -75,7 +88,40 @@ public class CharacterController2D : MonoBehaviour
 			momentum = 0;
 		if(momentum > m_SpeedLimit*2)
 			momentum = m_SpeedLimit*2;
+		
+		if(momentum >= deadlyMomentum) //trail
+			trailrenderer.time = Mathf.Max(0.5f, trailrenderer.time+0.025f);
+		else if(momentum >= deadlyMomentum-1.2f)
+			trailrenderer.time = 0.2f;
+		else
+			trailrenderer.time = Mathf.Max(trailrenderer.time-0.025f, 0);
 		Debug.Log(momentum);
+
+		//HERE IT TAKES CARE OF UPDATING THE UI
+		//here it writes the current momentum
+		momentum_text.text = (Mathf.Round((momentum / m_SpeedLimit)*100)).ToString() + "%";
+		if(momentum >= deadlyMomentum)
+			momentum_text.color = Color.red;
+		else if(momentum >= deadlyMomentum-1.2f)
+			momentum_text.color = new Color(1f, 0.5f, 0.31f);
+		else if(momentum >= deadlyMomentum-3.6f)
+			momentum_text.color = Color.yellow;
+		else
+			momentum_text.color = Color.white;
+
+		grapplingStatus.fillAmount = remainingRope; //fill the ui element with the remaining rope with...the remaining rope
+		if(remainingRope == 2){
+			grapplingStatus.sprite = grapplingRopeHooked;
+			grapplingStatusRoot.color = new Color(0, 0, 0, 0);}
+		else{
+			grapplingStatus.sprite = grapplingRope;
+			grapplingStatusRoot.color = new Color(1, 1, 1, 1);}
+
+		if(jumpCounter >= 2 || momentum >= deadlyMomentum - 1.2 || grapplingScript.grappled)
+			canDoubleJump.color = new Color(0, 0, 0, 0); //sets transparency to 0 if you cannot double jump
+		else
+			canDoubleJump.color = new Color(1, 1, 1, 1);
+		
 	}
 
 
@@ -117,15 +163,15 @@ public class CharacterController2D : MonoBehaviour
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 		}
-		// if grappled jumps and breaks the rope
-			else if(grapplingScript.grappled) {
+		// if grappled AND higher than the rope position jumps and breaks the rope
+			else if(grapplingScript.canGrapplejump) {
 				// adds the force and destroys the rope
-				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 				grapplingScript.destroyRope();
+				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 				animator.SetBool("GrappleJumping", true); //sets the grapplejump variable on the animator to true
 			}
 			// if has jumped only one time and is not grappled performs a super duper mega ultra cosmic hyper cool double-jump
-			else if(jumpCounter < 2 && momentum < deadlyMomentum - 1.2) {
+			else if(jumpCounter < 2 && momentum < deadlyMomentum - 1.2 && !grapplingScript.grappled) {
 				// resets the player's momentum and adds the force
 				m_Rigidbody2D.velocity = new Vector2(move / 1.5f, 0);
 				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));

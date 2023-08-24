@@ -24,6 +24,7 @@ public class Grappling : MonoBehaviour
 
     private Vector2 grapplingLaunchDirection = new Vector2(0, 0);
     public bool grappled = false; //this is on when the grappling hook hooks something
+    public bool canGrapplejump = false; //character can only grapple jump while grappling and with a rope y position less than the rope itself
     private bool brokenRope = false;
 
 
@@ -71,6 +72,10 @@ public class Grappling : MonoBehaviour
                         _distanceJoint.enabled = false;
                     else
                         _distanceJoint.enabled = true;
+                    if(_distanceJoint.enabled) //and if there is no distancejoint, you cannot grapplejump!
+                        canGrapplejump = true;
+
+                    charController.remainingRope = 2; //if I put 2, it means the character is grappled
 
                     //if the rope exceeds the max length AFTER it has been hooked, it can extend up to 75% more length before breaking.
                     if((transform.position - linePosition.position).magnitude > grapplingLength * 1.75f)
@@ -96,6 +101,8 @@ public class Grappling : MonoBehaviour
 			            }
 		            }
 
+                    charController.remainingRope = (grapplingLength-(transform.position - linePosition.position).magnitude)/grapplingLength;
+
                     //if the rope exceeds the max length while it's mid air, it gets fucking annihlated
                     if((transform.position - linePosition.position).magnitude > grapplingLength)
                     {
@@ -110,6 +117,11 @@ public class Grappling : MonoBehaviour
                 linePosition.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
                 }
+                else
+                {
+                    charController.remainingRope = 0; //if the rope is broken, send information about it
+                    canGrapplejump = false;
+                }
             }
             else if(Input.GetKeyUp(KeyCode.Mouse0))
             {
@@ -118,6 +130,8 @@ public class Grappling : MonoBehaviour
                 grapplingHook_renderer.enabled = false;
                 grappled = false;
                 brokenRope = false;
+                charController.remainingRope = 1;
+                canGrapplejump = false;
 
             }
 
