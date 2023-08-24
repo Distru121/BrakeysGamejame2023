@@ -9,12 +9,16 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private LayerMask m_WhatIsGround;							// A mask determining what is ground to the character
 	[SerializeField] private Transform m_GroundCheck;							// A position marking where to check if the player is grounded.
 	[SerializeField] private Transform m_CeilingCheck;							// A position marking where to check for ceiling
+	[SerializeField] private Grappling grapplingScript;
+	[SerializeField] private Animator animator;									//the animator for the character.
 	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
 	public bool m_Grounded;            // Whether or not the player is grounded.
 	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
 	private Rigidbody2D m_Rigidbody2D;
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
+
+	private int jumpCounter = 0;
 
 	public float momentum = 0f; //momentum of the player. If it's too high, it will cause a death upon landing.
 	private float airborneTime = 0f; //a timer that calculates the time the player was airborne at max momentum (freefalling), and sums itself to momentum, to cause death.
@@ -105,11 +109,38 @@ public class CharacterController2D : MonoBehaviour
 		}
 
 		// If the player should jump...
-		if (m_Grounded && jump)
+		if (jump)
 		{
+			// if grounded jumps normally
+		if(m_Grounded) {
 			// Add a vertical force to the player.
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+		}
+		// if grappled jumps and breaks the rope
+			else if(grapplingScript.grappled) {
+				// adds the force and destroys the rope
+				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+				grapplingScript.destroyRope();
+				animator.SetBool("GrappleJumping", true); //sets the grapplejump variable on the animator to true
+			}
+			// if has jumped only one time and is not grappled performs a super duper mega ultra cosmic hyper cool double-jump
+			else if(jumpCounter < 2 && momentum < deadlyMomentum - 1.2) {
+				// resets the player's momentum and adds the force
+				m_Rigidbody2D.velocity = new Vector2(move / 1.5f, 0);
+				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			}
+			jumpCounter++;
+		}
+
+		if(m_Grounded) {
+			jumpCounter = 0;
+			animator.SetBool("GrappleJumping", false);
+		}
+		if(grapplingScript.grappled)
+		{
+			Debug.Log(grapplingScript.grappled);
+			animator.SetBool("GrappleJumping", false); //reset the grapplejumping on the animator if you grapple again, so it can animate another jump.
 		}
 	}
 

@@ -23,7 +23,7 @@ public class Grappling : MonoBehaviour
     [SerializeField] private LayerMask m_WhatIsGround; //the grappling can grapple to ground
 
     private Vector2 grapplingLaunchDirection = new Vector2(0, 0);
-    private bool grappled = false; //this is on when the grappling hook hooks something
+    public bool grappled = false; //this is on when the grappling hook hooks something
     private bool brokenRope = false;
 
 
@@ -36,7 +36,6 @@ public class Grappling : MonoBehaviour
     }
 
     void Update() {
-        mouseDir = mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
         if(isGrappling == true)
         {
@@ -74,7 +73,7 @@ public class Grappling : MonoBehaviour
                         _distanceJoint.enabled = true;
 
                     //if the rope exceeds the max length AFTER it has been hooked, it can extend up to 75% more length before breaking.
-                    if((transform.position - linePosition.position).magnitude > grapplingLength + grapplingLength * 0.75f)
+                    if((transform.position - linePosition.position).magnitude > grapplingLength * 1.75f)
                     {
                         brokenRope = true;
                         _lineRenderer.enabled = false;
@@ -122,10 +121,6 @@ public class Grappling : MonoBehaviour
 
             }
 
-            if(_distanceJoint.enabled)
-            {
-                _lineRenderer.SetPosition(1, transform.position);
-            }
             if(Input.GetKey(KeyCode.Mouse1) && grappled)
             {
                 Vector3 direction = linePosition.position - transform.position;
@@ -138,6 +133,14 @@ public class Grappling : MonoBehaviour
                 _distanceJoint.enabled = true;
             }
         }
+    }
+
+    public void destroyRope() {
+        _distanceJoint.enabled = false;
+        _lineRenderer.enabled = false;
+        grapplingHook_renderer.enabled = false;
+        grappled = false;
+        brokenRope = true;
     }
 
 }

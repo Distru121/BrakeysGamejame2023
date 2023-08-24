@@ -972,6 +972,8 @@ MonoBehaviour:
     m_Bits: 64
   m_GroundCheck: {fileID: 633651432}
   m_CeilingCheck: {fileID: 1758928525}
+  grapplingScript: {fileID: 1251699551}
+  animator: {fileID: 1862689345}
   m_Grounded: 0
   momentum: 0
   deadlyMomentum: 16.5
@@ -1138,6 +1140,7 @@ MonoBehaviour:
   m_WhatIsGround:
     serializedVersion: 2
     m_Bits: 64
+  grappled: 0
 --- !u!120 &1251699552
 LineRenderer:
   serializedVersion: 2
@@ -1179,7 +1182,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Positions:
   - {x: 4, y: 0, z: 0}
   - {x: 0, y: 2, z: 1}
@@ -1766,7 +1769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4583322220120484143, guid: a5d25fd775d65264ca109a2218cbd3f4, type: 3}
       propertyPath: m_SortingOrder
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4583322220120484143, guid: a5d25fd775d65264ca109a2218cbd3f4, type: 3}
       propertyPath: m_UseWorldSpace
