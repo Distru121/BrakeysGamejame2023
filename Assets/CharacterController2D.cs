@@ -9,6 +9,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private float m_SpeedLimit = 100f; //speed limit the player can reach at max
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
 	[SerializeField] private LayerMask m_WhatIsGround;							// A mask determining what is ground to the character
+	[SerializeField] private LayerMask m_WhatIsDeadly;							// A mask determining what can kill the player
 	[SerializeField] private Transform m_GroundCheck;							// A position marking where to check if the player is grounded.
 	[SerializeField] private Transform m_CeilingCheck;							// A position marking where to check for ceiling
 	[SerializeField] private Grappling grapplingScript;
@@ -18,10 +19,12 @@ public class CharacterController2D : MonoBehaviour
 	public bool m_Grounded;            // Whether or not the player is grounded.
 	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
 	private Rigidbody2D m_Rigidbody2D;
+	private Collider2D m_Collider;
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
 
 	private int jumpCounter = 0;
+	public bool dashed = false;
 
 	public float momentum = 0f; //momentum of the player. If it's too high, it will cause a death upon landing.
 	private float airborneTime = 0f; //a timer that calculates the time the player was airborne at max momentum (freefalling), and sums itself to momentum, to cause death.
@@ -49,9 +52,12 @@ public class CharacterController2D : MonoBehaviour
 	private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
+		m_Collider = GetComponent<Collider2D>();
 
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
+		if (OnDeathEvent == null)
+			OnDeathEvent = new UnityEvent();
 	}
 
 	private void FixedUpdate()
@@ -73,6 +79,9 @@ public class CharacterController2D : MonoBehaviour
 					OnDeathEvent.Invoke();
 			}
 		}
+		//if player is touching a deadly thing, fucking die
+		if(m_Collider.IsTouchingLayers(m_WhatIsDeadly))
+			OnDeathEvent.Invoke();
 
 		//set velocity back to speed limit if it exceeds said speed
 		if(m_Rigidbody2D.velocity.magnitude > m_SpeedLimit)
@@ -95,7 +104,6 @@ public class CharacterController2D : MonoBehaviour
 			trailrenderer.time = 0.2f;
 		else
 			trailrenderer.time = Mathf.Max(trailrenderer.time-0.025f, 0);
-		Debug.Log(momentum);
 
 		//HERE IT TAKES CARE OF UPDATING THE UI
 		//here it writes the current momentum
@@ -117,15 +125,14 @@ public class CharacterController2D : MonoBehaviour
 			grapplingStatus.sprite = grapplingRope;
 			grapplingStatusRoot.color = new Color(1, 1, 1, 1);}
 
-		if(jumpCounter >= 2 || momentum >= deadlyMomentum - 1.2 || grapplingScript.grappled)
+		if(jumpCounter >= 1 || momentum >= deadlyMomentum - 1.2 || grapplingScript.grappled)
 			canDoubleJump.color = new Color(0, 0, 0, 0); //sets transparency to 0 if you cannot double jump
 		else
 			canDoubleJump.color = new Color(1, 1, 1, 1);
 		
 	}
 
-
-	public void Move(float move, bool jump)
+	public void Move(float move, bool jump, bool dash)
 	{
 
         //MOVE THE CHARACTER
@@ -169,25 +176,49 @@ public class CharacterController2D : MonoBehaviour
 				grapplingScript.destroyRope();
 				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 				animator.SetBool("GrappleJumping", true); //sets the grapplejump variable on the animator to true
+				jumpCounter++;
 			}
 			// if has jumped only one time and is not grappled performs a super duper mega ultra cosmic hyper cool double-jump
-			else if(jumpCounter < 2 && momentum < deadlyMomentum - 1.2 && !grapplingScript.grappled) {
+			else if(jumpCounter < 1 && momentum < deadlyMomentum - 1.2 && !grapplingScript.grappled) {
 				// resets the player's momentum and adds the force
 				m_Rigidbody2D.velocity = new Vector2(move / 1.5f, 0);
 				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+				animator.SetBool("IsDoubleJumping", true); //sets the doublejumping to true on the animator
+				jumpCounter++;
 			}
-			jumpCounter++;
 		}
 
 		if(m_Grounded) {
 			jumpCounter = 0;
+			dashed = false;
 			animator.SetBool("GrappleJumping", false);
+			animator.SetBool("IsDoubleJumping", false); //sets the doublejumping to true on the animator
 		}
 		if(grapplingScript.grappled)
 		{
-			Debug.Log(grapplingScript.grappled);
 			animator.SetBool("GrappleJumping", false); //reset the grapplejumping on the animator if you grapple again, so it can animate another jump.
 		}
+
+		// if the player should dash and the momentum isn't deadly the horizontal velocity is boosted and the vertical velocity is set to 0 (so he stops in mid air)
+		if(dash) {
+			m_Rigidbody2D.velocity = new Vector2(move * 4, 0);
+			dashed = true;
+		}
+
+	
+		// TELEPORT FOR DEBUGGING, REMOVE LATER
+		// TELEPORT FOR DEBUGGING, REMOVE LATER
+		// TELEPORT FOR DEBUGGING, REMOVE LATER
+		// TELEPORT FOR DEBUGGING, REMOVE LATER
+		// if the player is too low it gets teleported back to the spawn
+		if(m_Rigidbody2D.position.y < -90) {
+			m_Rigidbody2D.position = new Vector2 (0, 5);
+			m_Rigidbody2D.velocity = new Vector2(0, 0);
+		}
+		// TELEPORT FOR DEBUGGING, REMOVE LATER
+		// TELEPORT FOR DEBUGGING, REMOVE LATER
+		// TELEPORT FOR DEBUGGING, REMOVE LATER
+		// TELEPORT FOR DEBUGGING, REMOVE LATER
 	}
 
 

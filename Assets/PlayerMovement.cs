@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     public float runSpeed = 100f; 
     float HorizontalMove = 0f;
     bool jump = false;
+bool dash = false;
+    float dashedTime = 0;
 
     // Update is called once per frame
     void Update()
@@ -29,6 +31,11 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("IsJumping",true);
         }
 
+// if the player has not dashed he dashes
+        if(Input.GetKeyDown(KeyCode.LeftShift) && !controller.dashed && controller.momentum < controller.deadlyMomentum - 1.2) {
+            dash = true;
+            dashedTime = Time.time;
+        }
     }
 
 
@@ -41,7 +48,10 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         // move our character 
-        controller.Move(HorizontalMove * Time.fixedDeltaTime, jump);
+        controller.Move(HorizontalMove * Time.fixedDeltaTime, jump, dash);
         jump = false; 
+        // the dash lasts 5 frames
+        if(Time.time - dashedTime > Time.fixedDeltaTime * 5)
+            dash = false;
     }
 }
