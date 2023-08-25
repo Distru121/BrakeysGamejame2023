@@ -26,6 +26,7 @@ public class Grappling : MonoBehaviour
     public bool grappled = false; //this is on when the grappling hook hooks something
     public bool canGrapplejump = false; //character can only grapple jump while grappling and with a rope y position less than the rope itself
     private bool brokenRope = false;
+    public bool dead; //active when player is dead
 
 
     void Start() {
@@ -37,7 +38,7 @@ public class Grappling : MonoBehaviour
     }
 
     void Update() {
-
+    if(!dead) {
         if(isGrappling == true)
         {
 
@@ -147,6 +148,18 @@ public class Grappling : MonoBehaviour
                 _distanceJoint.enabled = true;
             }
         }
+        }
+        else {
+            // resets variables if dead
+            _distanceJoint.enabled = false;
+            _lineRenderer.enabled = false;
+            grapplingHook_renderer.enabled = false;
+            grappled = false;
+            brokenRope = false;
+            charController.remainingRope = 1;
+            canGrapplejump = false;
+        }
+                
     }
 
     public void destroyRope() {
