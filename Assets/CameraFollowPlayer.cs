@@ -26,6 +26,6 @@ public class CameraFollowPlayer : MonoBehaviour
         transform.position = Vector3.SmoothDamp(transform.position, movePos, ref velocity, damping * Time.fixedDeltaTime);
 
         //zooms out when increasing momentum
-        thisCamera.orthographicSize = Mathf.Lerp(thisCamera.orthographicSize, cameraDefaultSize + (Mathf.Max(0, playerController.momentum - 6.54f)*0.25f), (damping*0.75f) * Time.fixedDeltaTime);
+        thisCamera.orthographicSize = Mathf.Lerp(thisCamera.orthographicSize, cameraDefaultSize + (Mathf.Max(0, playerController.momentum - 6.54f)*0.29f), (damping*0.8f) * Time.fixedDeltaTime);
     }
 }

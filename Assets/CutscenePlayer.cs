@@ -12,6 +12,7 @@ public class CutscenePlayer : MonoBehaviour
 
     public float timeBetweenScenes = 4f;
     public float fadingTime = 1f; //this must be always lower than timebetweenscenes FOR THE LOVE OF GOD
+    public int sceneIndexToGoAfterCutscene = 1;
 
     private float timePassed;
     private int i = 0;
@@ -65,6 +66,6 @@ public class CutscenePlayer : MonoBehaviour
 
     void ChangeScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); //the menu is the next scene in the index
+        SceneManager.LoadScene(sceneIndexToGoAfterCutscene); //the menu is the next scene in the index
     }
 }

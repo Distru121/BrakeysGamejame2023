@@ -50,8 +50,9 @@ public class PlayerMovement : MonoBehaviour
         // move our character 
         controller.Move(HorizontalMove * Time.fixedDeltaTime, jump, dash);
         jump = false; 
-        // the dash lasts 5 frames
-        if(Time.time - dashedTime > Time.fixedDeltaTime * 5)
+        // the dash lasts 5 frames TODO: see what the fuck does this even do
+        if(Time.time - dashedTime > Time.fixedDeltaTime * 5) {
             dash = false;
+        }
     }
 }

@@ -22,7 +22,7 @@ public class CameraFollowObject : MonoBehaviour //THIS SCRIPT IS USED ONLY FOR T
     // Update is called once per frame
     void Update()
     {
-        if(objectPosition.position.y <= 0)
+        if(objectPosition.position.y <= 0 && objectPosition.position.y > -360)
         {
         Vector3 movePos = objectPosition.position + offset;
         transform.position = Vector3.SmoothDamp(transform.position, movePos, ref velocity, damping * Time.fixedDeltaTime);

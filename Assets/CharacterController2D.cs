@@ -17,7 +17,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private Animator animator;									//the animator for the character.
 	[SerializeField] private SpriteRenderer m_Renderer;							//the actual sprite of the player
 	[SerializeField] private TrailRenderer trailrenderer;						//the trail behind the player
-	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
+	const float k_GroundedRadius = .3f; // Radius of the overlap circle to determine if grounded
 	public bool m_Grounded;            // Whether or not the player is grounded.
 	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
 	public Rigidbody2D m_Rigidbody2D;
@@ -46,6 +46,8 @@ public class CharacterController2D : MonoBehaviour
 	public Sprite grapplingRope;
 	public Sprite grapplingRopeHooked;
 	public Image canDash;
+	public GameObject GameplayUIElems;
+	public GameObject DeathMenuUIElems;
 
 	//events
 	[Header("Events")]
@@ -102,11 +104,11 @@ public class CharacterController2D : MonoBehaviour
 			m_Rigidbody2D.velocity = m_Rigidbody2D.velocity.normalized * m_SpeedLimit;
 
 		//momentum calculation
-		if(!wasGrounded && m_Rigidbody2D.velocity.magnitude > 14f) //if freefalling, add extra airborne time
+		if(!wasGrounded && m_Rigidbody2D.velocity.y < -14f) //if freefalling, add extra airborne time
 			airborneTime += Time.fixedDeltaTime;
 		else
 			airborneTime = 0;
-		momentum = m_Rigidbody2D.velocity.magnitude + (airborneTime * 2);
+		momentum = Mathf.Abs(m_Rigidbody2D.velocity.y) + (airborneTime * 2);
 		if(momentum < 0)
 			momentum = 0;
 		if(momentum > m_SpeedLimit*2)
@@ -245,12 +247,15 @@ public class CharacterController2D : MonoBehaviour
 			m_Rigidbody2D.drag = 2f;
 			m_Renderer.enabled = false;
 			trailrenderer.enabled = false;
+			//and no ui, the death menu is displayed instead
+			GameplayUIElems.SetActive(false);
+			DeathMenuUIElems.SetActive(true);
 		}
 
 
 	}
 
-	void respawn() { //respawns the player
+	public void respawn() { //respawns the player
 		m_Rigidbody2D.velocity = Vector2.zero;
 		m_Rigidbody2D.position = checkPointPosition;
 		dead = false;
@@ -262,6 +267,9 @@ public class CharacterController2D : MonoBehaviour
 		m_Rigidbody2D.drag = 0f;
 		m_Renderer.enabled = true;
 		trailrenderer.enabled = true;
+		//and ui
+		GameplayUIElems.SetActive(true);
+			DeathMenuUIElems.SetActive(false);
 	}
 
 

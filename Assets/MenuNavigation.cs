@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class MenuNavigation : MonoBehaviour
 {
     public Image transitionImage;
+    public Animator menuAnimation;
 
     private bool isTransitioning = false;
     private float transitionTimer;
@@ -37,9 +38,14 @@ public class MenuNavigation : MonoBehaviour
     }
 
     public void PressPlay() {
+        if(!isTransitioning){
         //fades out and changes the scene to the level 1 scene(SampleScene)
         isTransitioning = true;
         targetSceneIndex = 2;
+
+        menuAnimation.SetBool("PressedPlay", true);
+        transitionTimer = -2;
+        }
     }
 
     public void PressOptions() {
@@ -51,8 +57,10 @@ public class MenuNavigation : MonoBehaviour
     }
 
     public void PressCredits() {
+        if(!isTransitioning){
         //fades out and changes the scene to the credits scene
         isTransitioning = true;
         targetSceneIndex = 3;
+        }
     }
 }

@@ -266,6 +266,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &517673559
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 517673561}
+  - component: {fileID: 517673560}
+  m_Layer: 0
+  m_Name: GlobalGameGestion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &517673560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517673559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6064cdab0d5508645a77ea0a5e40407d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasCompletedGame: 0
+--- !u!4 &517673561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517673559}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.2048279, y: -1.5050241, z: -0.1756166}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &596430995
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,6 +489,7 @@ MonoBehaviour:
   cutsceneFade: {fileID: 1694612173}
   timeBetweenScenes: 4
   fadingTime: 1
+  sceneIndexToGoAfterCutscene: 1
 --- !u!4 &1305984266
 Transform:
   m_ObjectHideFlags: 0
@@ -738,3 +784,4 @@ SceneRoots:
   - {fileID: 1648386430}
   - {fileID: 512124615}
   - {fileID: 1305984266}
+  - {fileID: 517673561}

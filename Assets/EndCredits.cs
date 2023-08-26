@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class EndCredits : MonoBehaviour
 {
     public int menuSceneIndex;
+    public int endingCutsceneSceneIndex;
 
     // Update is called once per frame
     void Update()
@@ -15,7 +16,7 @@ public class EndCredits : MonoBehaviour
             BackToMenu();
         }
 
-        if(transform.position.y <= -300) //if credits ended, return to menu
+        if(transform.position.y <= -390) //if credits ended, return to menu
         {
             BackToMenu();
         }
@@ -23,6 +24,16 @@ public class EndCredits : MonoBehaviour
 
     void BackToMenu()
     {
-        SceneManager.LoadScene(menuSceneIndex);
+        if(GameObject.Find("GlobalGameGestion")!= null)
+        {
+            if(GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().hasCompletedGame) {
+                GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().hasCompletedGame = false;
+                SceneManager.LoadScene(endingCutsceneSceneIndex);
+            }
+            else
+                SceneManager.LoadScene(menuSceneIndex);
+        }
+        else
+            SceneManager.LoadScene(menuSceneIndex);
     }
 }
