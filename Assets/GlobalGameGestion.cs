@@ -9,6 +9,7 @@ public class GlobalGameGestion : MonoBehaviour
     public bool hasCompletedGame = false;
 
     public float timetocomplete = -1;
+    public float bestTime = -1;
 
     private void Awake()
     {

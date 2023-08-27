@@ -25,6 +25,9 @@ public class EndLevel : MonoBehaviour
                 {
                     Debug.Log(GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().hasCompletedGame);
                     GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().hasCompletedGame = true;
+
+                    if(GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().timetocomplete < GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().bestTime || GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().bestTime == -1)
+                        GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().bestTime = GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().timetocomplete;
                 }
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); //for now, it will play credits.
             }

@@ -12,7 +12,7 @@ public class UI_SetBestTime : MonoBehaviour
     {
         m_TextComponent = GetComponent<TMP_Text>();
         if(GameObject.Find("GlobalGameGestion") != null){
-            int time = (int)Mathf.Round(GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().timetocomplete);
+            int time = (int)Mathf.Round(GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().bestTime);
             if(time != -1){
                 var ts = TimeSpan.FromSeconds(time);
                 m_TextComponent.text = "Best Time: "+string.Format("{0:00}:{1:00}", ts.Minutes, ts.Seconds);

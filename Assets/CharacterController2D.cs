@@ -16,8 +16,10 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private Grappling grapplingScript;
 	[SerializeField] private Animator animator;									//the animator for the character.
 	[SerializeField] private SpriteRenderer m_Renderer;							//the actual sprite of the player
-	[SerializeField] private TrailRenderer trailrenderer;						//the trail behind the player
-	const float k_GroundedRadius = .3f; // Radius of the overlap circle to determine if grounded
+	[SerializeField] private TrailRenderer trailrenderer;                       //the trail behind the player
+	[SerializeField] private AudioSource audio;                                   //sound effect player
+	public AudioClip runfx, jumpfx, grapplefx, ropefx, deathfx, dashfx, freefallingfx; //the sound effects
+    const float k_GroundedRadius = .3f; // Radius of the overlap circle to determine if grounded
 	public bool m_Grounded;            // Whether or not the player is grounded.
 	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
 	public Rigidbody2D m_Rigidbody2D;
@@ -25,6 +27,12 @@ public class CharacterController2D : MonoBehaviour
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
 	public Vector2 checkPointPosition = new Vector2(0, 0);
+
+	//particles
+	public GameObject walkDust;
+	public GameObject doublejumpDust;
+	private float dustInstantiationDelay;
+
 
 	private int jumpCounter = 0;
 	public bool dashed = false;
@@ -84,8 +92,9 @@ public class CharacterController2D : MonoBehaviour
 			if (colliders[i].gameObject != gameObject)
 			{
 				m_Grounded = true;
-				if (!wasGrounded)
+				if (!wasGrounded) {
 					OnLandEvent.Invoke();
+				}
 				if(momentum >= deadlyMomentum)
 					OnDeathEvent.Invoke();
 			}
@@ -115,7 +124,8 @@ public class CharacterController2D : MonoBehaviour
 		if(momentum > m_SpeedLimit*2)
 			momentum = m_SpeedLimit*2;
 		
-		if(momentum >= deadlyMomentum) //trail
+		//trail on if high momentum
+		if(momentum >= deadlyMomentum)
 			trailrenderer.time = Mathf.Max(0.5f, trailrenderer.time+0.025f);
 		else if(momentum >= deadlyMomentum-1.2f)
 			trailrenderer.time = 0.2f;
@@ -151,7 +161,10 @@ public class CharacterController2D : MonoBehaviour
 			canDash.color = new Color(1, 1, 1, 1);
 		else
 			canDash.color = new Color(0, 0, 0, 0);
-		
+
+
+		//reduce dustinstantiationdelay
+		dustInstantiationDelay -= Time.deltaTime;
 	}
 
 	public void Move(float move, bool jump, bool dash)
@@ -208,8 +221,14 @@ public class CharacterController2D : MonoBehaviour
 					m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 					animator.SetBool("IsDoubleJumping", true); //sets the doublejumping to true on the animator
 					jumpCounter++;
+
+					//instantiate some particles
+					GameObject particle = Instantiate(doublejumpDust, transform.position - new Vector3(0, 0.33f, 0), Quaternion.identity);
+					dustInstantiationDelay = 0.25f;
+					Destroy(particle, 1);
 				}
 			}
+			
 
 			if(m_Grounded) {
 				jumpCounter = 0;
@@ -222,7 +241,7 @@ public class CharacterController2D : MonoBehaviour
 				animator.SetBool("GrappleJumping", false); //reset the grapplejumping on the animator if you grapple again, so it can animate another jump.
 			}
 
-			// if the player should dash and the momentum isn't deadly the horizontal velocity is boosted and the vertical velocity is set to 0 (so he stops in mid air)
+			// if the player should dash the horizontal velocity is boosted and the vertical velocity is set to 0 (so he stops in mid air)
 			if(dash) {
 				if(grapplingScript.canGrapplejump)
 				{
@@ -233,6 +252,80 @@ public class CharacterController2D : MonoBehaviour
 				else
 					m_Rigidbody2D.velocity = new Vector2(-dashStrength, 0);
 				dashed = true;
+				trailrenderer.time = 0.6f; //intensifies the trail
+			}
+
+			//PARTICLES
+			if(move != 0 && m_Grounded && dustInstantiationDelay <= 0) //dust particles when walking
+			{
+				if(m_FacingRight)
+				{
+					GameObject particle = Instantiate(walkDust, transform.position - new Vector3(0, 0.33f, 0), Quaternion.identity);
+					dustInstantiationDelay = 0.25f;
+					Destroy(particle, 1);
+				}
+				else
+				{
+					GameObject particle = Instantiate(walkDust, transform.position - new Vector3(0, 0.33f, 0), Quaternion.identity);
+					particle.transform.localScale = new Vector3(-1, 1, 1);
+					dustInstantiationDelay = 0.25f;
+					Destroy(particle, 1);
+				}
+			}
+
+			//SOUND EFFECTS
+			//play run sound effect if grounded and moving
+			if(move!= 0 && m_Grounded)
+			{
+				if(!audio.isPlaying){
+					audio.clip = runfx;
+					audio.pitch = 1 + Random.Range(-0.05f, 0.1f);
+					audio.Play();
+				}
+			}
+			else if(audio.clip == runfx)
+			{
+				audio.Stop();
+			}
+			//if swinging with grappling, play rope.
+			if(m_Rigidbody2D.velocity.magnitude > 0.2f && !m_Grounded && grapplingScript.grappled)
+			{
+				if(!audio.isPlaying){
+					audio.clip = ropefx;
+					audio.pitch = 1 + Random.Range(-0.05f, 0.25f);
+					audio.Play();
+				}
+			}
+			else if(audio.clip == ropefx)
+			{
+				audio.Stop();
+			}
+			//if dashing, play dash sound
+			if(dash)
+			{
+				audio.clip = dashfx;
+				audio.pitch = 1 + Random.Range(-0.05f, 0.05f);
+				audio.Play();
+			}
+			//if jumping, play jump sound
+			if(jump && jumpCounter == 0)
+			{
+				audio.clip = jumpfx;
+				audio.pitch = 1 + Random.Range(-0.05f, 0.15f);
+				audio.Play();
+			}
+			//if high momentum, play the wind howling sound
+			if(momentum > deadlyMomentum - 1.2)
+			{
+				if(!audio.isPlaying){
+					audio.clip = freefallingfx;
+					audio.pitch = 1 + Random.Range(-0.05f, 0.2f);
+					audio.Play();
+				}
+			}
+			else if(audio.clip == freefallingfx)
+			{
+				audio.Stop();
 			}
 		}
 		// press enter to respawn
@@ -283,5 +376,13 @@ public class CharacterController2D : MonoBehaviour
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
+	}
+
+	//death sound effect
+	public void PlayDeathSound()
+	{
+		audio.clip = deathfx;
+		audio.pitch = 1 + Random.Range(-0.05f, 0.25f);
+		audio.Play();
 	}
 }

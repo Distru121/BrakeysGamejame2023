@@ -17,6 +17,9 @@ public class Grappling : MonoBehaviour
     public bool isGrappling;
     public CharacterController2D charController;
 
+    public AudioSource grapplingAudio;
+    public AudioClip grapplefx;
+
     public float grapplingHookSpeed = 10f;
     public float grapplingLength = 100f;
 
@@ -99,6 +102,11 @@ public class Grappling : MonoBehaviour
 			            { //when grappling, it connects the joint to the hook end
 				            grappled = true;
                             _distanceJoint.connectedAnchor = linePosition.position;
+                            
+                            //and plays the sound effect
+                            grapplingAudio.clip = grapplefx;
+                            grapplingAudio.pitch = 1 + Random.Range(0.05f, 0.35f);
+                            grapplingAudio.Play();
 			            }
 		            }
 
