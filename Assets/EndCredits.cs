@@ -16,7 +16,7 @@ public class EndCredits : MonoBehaviour
             BackToMenu();
         }
 
-        if(transform.position.y <= -390) //if credits ended, return to menu
+        if(transform.position.y <= -410) //if credits ended, return to menu
         {
             BackToMenu();
         }

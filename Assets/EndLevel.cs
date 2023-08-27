@@ -15,12 +15,19 @@ public class EndLevel : MonoBehaviour
     {
         if(coll.IsTouchingLayers(WhatIsEnd))
         {
-            if(GameObject.Find("GlobalGameGestion")!= null)
+            if(SceneManager.GetActiveScene().name == "tutorialScene") //if you are in the tutorial scene, go to menu
             {
-                Debug.Log(GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().hasCompletedGame);
-                GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().hasCompletedGame = true;
+                SceneManager.LoadScene(1);
             }
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); //for now, it will play credits.
+            else
+            {
+                if(GameObject.Find("GlobalGameGestion")!= null)
+                {
+                    Debug.Log(GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().hasCompletedGame);
+                    GameObject.Find("GlobalGameGestion").GetComponent<GlobalGameGestion>().hasCompletedGame = true;
+                }
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); //for now, it will play credits.
+            }
         }
     }
 }

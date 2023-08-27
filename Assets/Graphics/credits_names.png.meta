@@ -148,9 +148,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 7
-        y: 2056
-        width: 1324
-        height: 119
+        y: 2055
+        width: 1098
+        height: 120
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -299,7 +299,7 @@ TextureImporter:
         width: 464
         height: 66
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

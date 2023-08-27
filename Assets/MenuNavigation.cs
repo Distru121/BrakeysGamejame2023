@@ -8,6 +8,7 @@ public class MenuNavigation : MonoBehaviour
 {
     public Image transitionImage;
     public Animator menuAnimation;
+    public GameObject buttons;
 
     private bool isTransitioning = false;
     private float transitionTimer;
@@ -44,7 +45,8 @@ public class MenuNavigation : MonoBehaviour
         targetSceneIndex = 2;
 
         menuAnimation.SetBool("PressedPlay", true);
-        transitionTimer = -2;
+            buttons.SetActive(false);
+            transitionTimer = -2;
         }
     }
 
@@ -53,7 +55,11 @@ public class MenuNavigation : MonoBehaviour
     }
 
     public void PressTutorial() {
-
+        if(!isTransitioning){
+        //fades out and changes the scene to the tutorial scene
+        isTransitioning = true;
+        targetSceneIndex = 5;
+        }
     }
 
     public void PressCredits() {

@@ -61,6 +61,7 @@ public class CharacterController2D : MonoBehaviour
 
 	private void Awake()
 	{
+		trailrenderer.enabled = true;
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 		m_Collider = GetComponent<Collider2D>();
 
